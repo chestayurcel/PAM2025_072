@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.retrofit.serialization)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.serialization)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     testImplementation(libs.junit)
