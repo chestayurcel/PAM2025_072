@@ -31,6 +31,10 @@ class AuthRepository(
         return pref.getToken()
     }
 
+    fun getName(): String? {
+        return pref.getName()
+    }
+
     // Logout
     suspend fun logout(): Result<String> {
         return try {
