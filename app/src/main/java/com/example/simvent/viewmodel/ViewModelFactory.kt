@@ -17,6 +17,14 @@ object ViewModelFactory {
         }
 
         initializer {
+            DashboardViewModel(
+                simventApplication().container.assetRepository,
+                simventApplication().container.roomRepository,
+                simventApplication().container.authRepository
+            )
+        }
+
+        initializer {
             AssetViewModel(
                 simventApplication().container.assetRepository,
                 simventApplication().container.authRepository
