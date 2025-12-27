@@ -17,7 +17,7 @@ object ViewModelFactory {
         }
 
         initializer {
-            HomeViewModel(
+            AssetViewModel(
                 simventApplication().container.assetRepository,
                 simventApplication().container.authRepository
             )
