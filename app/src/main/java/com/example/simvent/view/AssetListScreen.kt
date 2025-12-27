@@ -17,18 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.simvent.data.model.AssetItem
-import com.example.simvent.viewmodel.HomeUiState
-import com.example.simvent.viewmodel.HomeViewModel
+import com.example.simvent.viewmodel.AssetUiState
+import com.example.simvent.viewmodel.AssetViewModel
 import com.example.simvent.viewmodel.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun AssetListScreen(
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel = viewModel(factory = ViewModelFactory.Factory)
+    assetViewModel: AssetViewModel = viewModel(factory = ViewModelFactory.Factory)
 ) {
-    val uiState = homeViewModel.homeUiState
+    val uiState = assetViewModel.assetUiState
 
     Scaffold(
         topBar = {
@@ -36,12 +36,12 @@ fun HomeScreen(
                 title = { Text("Dashboard Aset") },
                 actions = {
                     // Tombol Refresh
-                    IconButton(onClick = { homeViewModel.getAssets() }) {
+                    IconButton(onClick = { assetViewModel.getAssets() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                     // Tombol Logout
                     IconButton(onClick = {
-                        homeViewModel.logout()
+                        assetViewModel.logout()
                         onLogout()
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
@@ -59,19 +59,19 @@ fun HomeScreen(
         Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
 
             when (uiState) {
-                is HomeUiState.Loading -> {
+                is AssetUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                is HomeUiState.Success -> {
+                is AssetUiState.Success -> {
                     AssetList(assets = uiState.assets)
                 }
-                is HomeUiState.Error -> {
+                is AssetUiState.Error -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = uiState.message, color = Color.Red)
-                        Button(onClick = { homeViewModel.getAssets() }) {
+                        Button(onClick = { assetViewModel.getAssets() }) {
                             Text("Coba Lagi")
                         }
                     }
