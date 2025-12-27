@@ -64,7 +64,7 @@ fun LoginScreen(
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = "Sistem Inventaris Masuk",
+            text = "Sistem Inventarisasi Manajemen Aset",
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.secondary
         )
