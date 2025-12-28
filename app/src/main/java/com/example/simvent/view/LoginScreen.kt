@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,7 +39,7 @@ fun LoginScreen(
         when (uiState) {
             is LoginUiState.Success -> {
                 Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
-                onLoginSuccess() // Panggil fungsi navigasi ke Home
+                onLoginSuccess()
                 loginViewModel.resetState()
             }
             is LoginUiState.Error -> {
@@ -59,13 +60,14 @@ fun LoginScreen(
     ) {
         Text(
             text = "SIMVENT",
-            fontSize = 32.sp,
+            fontSize = 50.sp,
             style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold
         )
         Text(
             text = "Sistem Inventarisasi Manajemen Aset",
-            fontSize = 16.sp,
+            fontSize = 20.sp,
             color = MaterialTheme.colorScheme.secondary
         )
 
