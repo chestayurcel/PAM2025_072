@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.simvent.uicontroller.route.Screen
+import com.example.simvent.view.AddRoomScreen
 import com.example.simvent.view.AssetListScreen
 import com.example.simvent.view.DashboardScreen
 import com.example.simvent.view.LoginScreen
@@ -62,9 +63,20 @@ fun NavigationMap(navController: NavHostController) {
              RoomListScreen(
                  onBack = { navController.popBackStack() },
                  onAddRoom = {
-                     // navController.navigate("add_room")
-                 }
+                     // Pindah ke halaman Add Room
+                     navController.navigate(Screen.AddRoom.route)                 }
              )
+        }
+
+        // 5. RUTE ADD ROOM
+        composable(Screen.AddRoom.route) {
+            AddRoomScreen(
+                onBack = { navController.popBackStack() },
+                onSuccess = {
+                    // Kalau sukses, mundur ke list & otomatis refresh
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
