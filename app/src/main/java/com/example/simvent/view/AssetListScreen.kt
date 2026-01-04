@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,10 +26,15 @@ import com.example.simvent.viewmodel.ViewModelFactory
 @Composable
 fun AssetListScreen(
     onBack: () -> Unit,
+    onAddAsset: () -> Unit,
     modifier: Modifier = Modifier,
     assetViewModel: AssetViewModel = viewModel(factory = ViewModelFactory.Factory)
 ) {
     val uiState = assetViewModel.assetUiState
+
+    LaunchedEffect(Unit) {
+        assetViewModel.getAssets()
+    }
 
     Scaffold(
         topBar = {
@@ -51,7 +57,7 @@ fun AssetListScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = onAddAsset) {
                 Icon(Icons.Default.Add, contentDescription = "Tambah Aset")
             }
         }
