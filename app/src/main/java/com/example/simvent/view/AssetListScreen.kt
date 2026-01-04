@@ -133,7 +133,7 @@ fun AssetCard(asset: AssetItem, viewModel: AssetViewModel) {
                 }) { Text("Hapus", color = Color.Red) }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Batal") }
+                TextButton(onClick = { showDialog = false }) { Text("Tidak") }
             }
         )
     }
@@ -158,7 +158,7 @@ fun AssetCard(asset: AssetItem, viewModel: AssetViewModel) {
                 Row {
                     // Tombol Hapus
                     IconButton(onClick = { showDialog = true }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Hapus", tint = Color.Red)
+                        Icon(Icons.Default.Delete, contentDescription = "Ya", tint = Color.Red)
                     }
                     // Tombol Edit
                     IconButton(onClick = {  }) {
