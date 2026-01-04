@@ -11,6 +11,9 @@ import com.example.simvent.data.repository.AssetRepository
 import com.example.simvent.data.repository.AuthRepository
 import com.example.simvent.data.repository.RoomRepository
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 sealed interface AddAssetUiState {
     object Idle : AddAssetUiState
@@ -58,13 +61,15 @@ class AddAssetViewModel(
                 try {
                     val qtyInt = qty.toIntOrNull() ?: 0
 
+                    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
                     val asset = AssetItem(
                         assetId = 0,
                         assetName = name,
                         qty = qtyInt,
                         unit = unit,
                         condition = condition,
-                        entryDate = "",
+                        entryDate = currentDate,
                         itemDesc = desc,
                         roomId = roomId,
                         roomName = null
