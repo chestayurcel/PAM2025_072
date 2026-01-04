@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 fun AssetListScreen(
     onBack: () -> Unit,
     onAddAsset: () -> Unit,
+    onEditAsset: (Int) -> Unit,
     modifier: Modifier = Modifier,
     assetViewModel: AssetViewModel = viewModel(factory = ViewModelFactory.Factory)
 ) {
@@ -76,7 +77,11 @@ fun AssetListScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 is AssetUiState.Success -> {
-                    AssetList(assets = uiState.assets, viewModel = assetViewModel)
+                    AssetList(
+                        assets = uiState.assets,
+                        viewModel = assetViewModel,
+                        onEdit = onEditAsset
+                    )
                 }
                 is AssetUiState.Error -> {
                     Column(
@@ -98,7 +103,8 @@ fun AssetListScreen(
 @Composable
 fun AssetList(
     assets: List<AssetItem>,
-    viewModel: AssetViewModel
+    viewModel: AssetViewModel,
+    onEdit: (Int) -> Unit
 ) {
     if (assets.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -110,14 +116,18 @@ fun AssetList(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(assets) { asset ->
-                AssetCard(asset, viewModel)
+                AssetCard(asset, viewModel, onEdit)
             }
         }
     }
 }
 
 @Composable
-fun AssetCard(asset: AssetItem, viewModel: AssetViewModel) {
+fun AssetCard(
+    asset: AssetItem,
+    viewModel: AssetViewModel,
+    onEdit: (Int) -> Unit
+) {
     var showDialog by remember { mutableStateOf(false) }
 
     // DIALOG KONFIRMASI HAPUS
@@ -161,7 +171,7 @@ fun AssetCard(asset: AssetItem, viewModel: AssetViewModel) {
                         Icon(Icons.Default.Delete, contentDescription = "Hapus", tint = Color.Red)
                     }
                     // Tombol Edit
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { onEdit(asset.assetId) }) {
                         Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.Gray)
                     }
                 }
