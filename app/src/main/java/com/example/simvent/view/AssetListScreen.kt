@@ -1,5 +1,6 @@
 package com.example.simvent.view
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,6 +131,7 @@ fun AssetCard(
     onEdit: (Int) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     // DIALOG KONFIRMASI HAPUS
     if (showDialog) {
@@ -138,7 +141,12 @@ fun AssetCard(
             text = { Text("Apakah Anda yakin ingin menghapus '${asset.assetName}'?") },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.deleteAsset(asset.assetId) // Panggil Fungsi Hapus
+                    viewModel.deleteAsset(
+                        asset.assetId,
+                        onSuccess = {
+                            Toast.makeText(context, "Data Aset Terhapus", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                     showDialog = false
                 }) { Text("Ya", color = Color.Red) }
             },

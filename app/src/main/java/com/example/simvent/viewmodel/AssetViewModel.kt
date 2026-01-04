@@ -53,16 +53,17 @@ class AssetViewModel(
     }
 
     // Fungsi Hapus Data
-    fun deleteAsset(assetId: Int) {
+    fun deleteAsset(assetId: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            // Kita set loading dulu agar UI tidak bisa diklik
             assetUiState = AssetUiState.Loading
 
             val token = authRepository.getSessionToken()
             if (token != null) {
                 val result = assetRepository.deleteAsset(token, assetId)
                 if (result.isSuccess) {
-                    // Jika sukses hapus, langsung refresh data list
+                    // Panggil Callback sukses
+                    onSuccess()
+                    // Refresh data list
                     getAssets()
                 } else {
                     assetUiState = AssetUiState.Error(result.exceptionOrNull()?.message ?: "Gagal menghapus")
