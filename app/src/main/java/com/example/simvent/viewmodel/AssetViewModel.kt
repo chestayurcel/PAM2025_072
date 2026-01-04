@@ -52,6 +52,27 @@ class AssetViewModel(
         }
     }
 
+    // Fungsi Hapus Data
+    fun deleteAsset(assetId: Int) {
+        viewModelScope.launch {
+            // Kita set loading dulu agar UI tidak bisa diklik
+            assetUiState = AssetUiState.Loading
+
+            val token = authRepository.getSessionToken()
+            if (token != null) {
+                val result = assetRepository.deleteAsset(token, assetId)
+                if (result.isSuccess) {
+                    // Jika sukses hapus, langsung refresh data list
+                    getAssets()
+                } else {
+                    assetUiState = AssetUiState.Error(result.exceptionOrNull()?.message ?: "Gagal menghapus")
+                }
+            } else {
+                assetUiState = AssetUiState.Error("Sesi habis")
+            }
+        }
+    }
+
     // Fungsi Logout
     fun logout() {
         viewModelScope.launch {
