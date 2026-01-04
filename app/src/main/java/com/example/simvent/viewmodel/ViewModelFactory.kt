@@ -52,6 +52,14 @@ object ViewModelFactory {
                 simventApplication().container.authRepository
             )
         }
+
+        initializer {
+            EditAssetViewModel(
+                simventApplication().container.assetRepository,
+                simventApplication().container.roomRepository,
+                simventApplication().container.authRepository
+            )
+        }
     }
 }
 
