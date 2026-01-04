@@ -58,4 +58,22 @@ class AssetRepository(
             Result.failure(e)
         }
     }
+
+    // 5. Ambil Detail Aset by ID
+    suspend fun getAssetById(token: String, id: Int): Result<AssetItem> {
+        return try {
+            // Karena belum ada API khusus detail, kita panggil getAssets lalu cari manual
+            val result = getAssets(token)
+            if (result.isSuccess) {
+                val list = result.getOrNull()?.data ?: emptyList()
+                val item = list.find { it.assetId == id }
+                if (item != null) Result.success(item)
+                else Result.failure(Exception("Aset tidak ditemukan"))
+            } else {
+                Result.failure(result.exceptionOrNull() ?: Exception("Gagal ambil data"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
