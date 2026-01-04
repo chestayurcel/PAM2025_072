@@ -21,6 +21,12 @@ import com.example.simvent.data.model.AssetItem
 import com.example.simvent.viewmodel.AssetUiState
 import com.example.simvent.viewmodel.AssetViewModel
 import com.example.simvent.viewmodel.ViewModelFactory
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +76,7 @@ fun AssetListScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 is AssetUiState.Success -> {
-                    AssetList(assets = uiState.assets)
+                    AssetList(assets = uiState.assets, viewModel = assetViewModel)
                 }
                 is AssetUiState.Error -> {
                     Column(
@@ -90,7 +96,10 @@ fun AssetListScreen(
 
 // Komponen Item List (Card)
 @Composable
-fun AssetList(assets: List<AssetItem>) {
+fun AssetList(
+    assets: List<AssetItem>,
+    viewModel: AssetViewModel
+) {
     if (assets.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Belum ada data aset.")
@@ -101,25 +110,65 @@ fun AssetList(assets: List<AssetItem>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(assets) { asset ->
-                AssetCard(asset)
+                AssetCard(asset, viewModel)
             }
         }
     }
 }
 
 @Composable
-fun AssetCard(asset: AssetItem) {
+fun AssetCard(asset: AssetItem, viewModel: AssetViewModel) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    // DIALOG KONFIRMASI HAPUS
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Hapus Aset?") },
+            text = { Text("Apakah Anda yakin ingin menghapus '${asset.assetName}'?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteAsset(asset.assetId) // Panggil Fungsi Hapus
+                    showDialog = false
+                }) { Text("Hapus", color = Color.Red) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) { Text("Batal") }
+            }
+        )
+    }
+
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = asset.assetName,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = asset.assetName,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Row {
+                    // Tombol Hapus
+                    IconButton(onClick = { showDialog = true }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Hapus", tint = Color.Red)
+                    }
+                    // Tombol Edit
+                    IconButton(onClick = {  }) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.Gray)
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(4.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
