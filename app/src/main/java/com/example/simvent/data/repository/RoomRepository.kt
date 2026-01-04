@@ -38,11 +38,15 @@ class RoomRepository(
     }
 
     // 3. Update Ruangan
-    suspend fun updateRoom(token: String, id: Int, name: String, desc: String): Result<GeneralResponse> {
+    suspend fun updateRoom(token: String, roomId: Int, name: String, desc: String): Result<GeneralResponse> {
         return try {
-            val room = RoomItem(id, name, desc)
-            val response = apiService.updateRoom(generateBearer(token), room)
+            val roomData = RoomItem(
+                roomId = roomId,
+                roomName = name,
+                roomDesc = desc
+            )
 
+            val response = apiService.updateRoom("Bearer $token", roomData)
             if (response.status == "success") Result.success(response)
             else Result.failure(Exception(response.message))
         } catch (e: Exception) {
@@ -50,14 +54,32 @@ class RoomRepository(
         }
     }
 
-    // 4. Hapus Ruangan (Validasi aset ada di server)
+    // 4. Hapus Ruangan
     suspend fun deleteRoom(token: String, roomId: Int): Result<GeneralResponse> {
         return try {
+            // @Body idMap: Map<String, Int>
             val idMap = mapOf("room_id" to roomId)
-            val response = apiService.deleteRoom(generateBearer(token), idMap)
 
+            val response = apiService.deleteRoom("Bearer $token", idMap)
             if (response.status == "success") Result.success(response)
             else Result.failure(Exception(response.message))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // 5. Ambil Ruangan Berdasarkan ID
+    suspend fun getRoomById(token: String, id: Int): Result<RoomItem> {
+        return try {
+            val result = getRooms(token)
+            if (result.isSuccess) {
+                val list = result.getOrNull()?.data ?: emptyList()
+                val item = list.find { it.roomId == id }
+                if (item != null) Result.success(item)
+                else Result.failure(Exception("Ruangan tidak ditemukan"))
+            } else {
+                Result.failure(result.exceptionOrNull() ?: Exception("Gagal ambil data"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
