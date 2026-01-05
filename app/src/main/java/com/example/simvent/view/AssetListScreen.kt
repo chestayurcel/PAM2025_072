@@ -4,9 +4,13 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,11 +28,15 @@ import com.example.simvent.viewmodel.AssetViewModel
 import com.example.simvent.viewmodel.ViewModelFactory
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,9 +44,9 @@ fun AssetListScreen(
     onBack: () -> Unit,
     onAddAsset: () -> Unit,
     onEditAsset: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-    assetViewModel: AssetViewModel = viewModel(factory = ViewModelFactory.Factory)
+    modifier: Modifier = Modifier
 ) {
+    val assetViewModel: AssetViewModel = viewModel(factory = ViewModelFactory.Factory)
     val uiState = assetViewModel.assetUiState
 
     LaunchedEffect(Unit) {
@@ -71,31 +79,117 @@ fun AssetListScreen(
             }
         }
     ) { innerPadding ->
+        Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
 
-        Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+            // BAGIAN SEARCH & FILTER
+            SearchAndFilterSection(assetViewModel)
 
-            when (uiState) {
-                is AssetUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                is AssetUiState.Success -> {
-                    AssetList(
-                        assets = uiState.assets,
-                        viewModel = assetViewModel,
-                        onEdit = onEditAsset
-                    )
-                }
-                is AssetUiState.Error -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = uiState.message, color = Color.Red)
-                        Button(onClick = { assetViewModel.getAssets() }) {
-                            Text("Coba Lagi")
+            Divider(thickness = 1.dp, color = Color.LightGray)
+
+            // BAGIAN LIST DATA
+            Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+
+                when (uiState) {
+                    is AssetUiState.Loading -> {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+
+                    is AssetUiState.Success -> {
+                        AssetList(
+                            assets = uiState.assets,
+                            viewModel = assetViewModel,
+                            onEdit = onEditAsset
+                        )
+                    }
+
+                    is AssetUiState.Error -> {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = uiState.message, color = Color.Red)
+                            Button(onClick = { assetViewModel.getAssets() }) {
+                                Text("Coba Lagi")
+                            }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+// Komponen Search & Filter
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchAndFilterSection(viewModel: AssetViewModel) {
+    var showFilterMenu by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        // Baris Search
+        OutlinedTextField(
+            value = viewModel.searchQuery,
+            onValueChange = { viewModel.onSearchQueryChanged(it) },
+            placeholder = { Text("Cari nama aset...") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                // Ikon Filter di dalam Search Bar
+                IconButton(onClick = { showFilterMenu = true }) {
+                    Icon(
+                        Icons.Filled.FilterAlt,
+                        contentDescription = "Filter",
+                        tint = if (viewModel.selectedFilterRoom != null) MaterialTheme.colorScheme.primary else Color.Gray
+                    )
+                }
+
+                // Menu Dropdown Filter
+                DropdownMenu(
+                    expanded = showFilterMenu,
+                    onDismissRequest = { showFilterMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Semua Ruangan (Reset)") },
+                        onClick = {
+                            viewModel.onFilterSelected(null) // Reset Filter
+                            showFilterMenu = false
+                        }
+                    )
+                    viewModel.roomList.forEach { room ->
+                        DropdownMenuItem(
+                            text = { Text(room.roomName) },
+                            onClick = {
+                                viewModel.onFilterSelected(room)
+                                showFilterMenu = false
+                            }
+                        )
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            // Aksi saat tekan Enter di keyboard
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+                viewModel.getAssets()
+                focusManager.clearFocus() // Tutup keyboard
+            }),
+            shape = RoundedCornerShape(12.dp)
+        )
+
+        // Tampilkan Chip kecil jika Filter sedang aktif
+        if (viewModel.selectedFilterRoom != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Filter: ", fontSize = 12.sp, color = Color.Gray)
+                InputChip(
+                    selected = true,
+                    onClick = { viewModel.onFilterSelected(null) }, // Klik untuk hapus filter
+                    label = { Text(viewModel.selectedFilterRoom!!.roomName) },
+                    trailingIcon = {
+                        Icon(Icons.Default.Close, contentDescription = "Hapus", modifier = Modifier.size(16.dp))
+                    }
+                )
             }
         }
     }
