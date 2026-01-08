@@ -17,11 +17,14 @@ import com.example.simvent.view.LoginScreen
 import com.example.simvent.view.RoomListScreen
 
 @Composable
-fun NavigationMap(navController: NavHostController) {
+fun NavigationMap(
+    navController: NavHostController,
+    startDestination: String
+) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Login.route
+        startDestination = startDestination
     ) {
 
         // 1. RUTE LOGIN
