@@ -1,6 +1,7 @@
 package com.example.simvent.view
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -8,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -18,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.simvent.viewmodel.LoginUiState
 import com.example.simvent.viewmodel.LoginViewModel
 import com.example.simvent.viewmodel.ViewModelFactory
+import com.example.simvent.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,20 +61,36 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "SIMVENT",
-            fontSize = 50.sp,
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "Sistem Inventarisasi Manajemen Aset",
-            fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.secondary
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // LOGO
+            Image(
+                painter = painterResource(id = R.drawable.simvent_logo),
+                contentDescription = "Logo Simvent",
+                modifier = Modifier.size(120.dp)
+            )
 
-        Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.width(15.dp))
+
+            // TEKS JUDUL & DESKRIPSI
+            Column {
+                Text(
+                    text = "SIMVENT",
+                    fontSize = 55.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Sistem Inventarisasi\nManajemen Aset",
+                    fontSize = 20.sp,
+                    color = androidx.compose.ui.graphics.Color.Gray,
+                    lineHeight = 20.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(35.dp))
 
         // INPUT USERNAME
         OutlinedTextField(
