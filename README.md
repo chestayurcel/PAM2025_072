@@ -13,6 +13,11 @@
 
 Aplikasi ini berfungsi sebagai klien (Front-end) yang terhubung ke server backend (PHP & MySQL). SIMVENT memungkinkan admin untuk mengelola data barang (aset) dan lokasi (ruangan) secara *real-time*. Dengan fitur validasi token, aplikasi ini menjamin keamanan sesi pengguna.
 
+### Struktur Repositori
+Repositori ini terdiri dari 2 *branch* utama:
+1.  **`master`**: Berisi *source code* aplikasi Android (Kotlin).
+2.  **`backend`**: Berisi *source code* API (PHP Native) dan file Database (.sql).
+
 ### Arsitektur & Teknologi
 * **Bahasa:** Kotlin
 * **UI Toolkit:** Jetpack Compose
@@ -56,32 +61,56 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek ini di komputer lokal And
 
 ### Prasyarat
 1.  **Android Studio** (Versi terbaru, support Jetpack Compose).
-2.  **XAMPP** (atau web server lain untuk PHP & MySQL).
+2.  **Web Server** (XAMPP atau Laragon).
 3.  **Kabel Data / Emulator** Android.
 
-### Langkah 1: Setup Backend (Server)
-1.  Aktifkan **Apache** dan **MySQL** pada LARAGON.
-2.  Buka `phpMyAdmin` dan buat database baru bernama `simvent_db`.
-3.  Import file SQL database (biasanya `simvent_db.sql`) ke dalam database tersebut.
-4.  Pastikan folder API PHP Anda (`simvent-api`) tersimpan di folder `www`.
-5.  **PENTING:** Cari tahu IP Address laptop Anda.
-    * *Windows:* Buka CMD -> ketik `ipconfig` -> salin IPv4 Address (misal: `192.168.1.10`).
-
-### Langkah 2: Setup Android Project
-1.  Clone repositori ini atau download ZIP.
-2.  Buka proyek di **Android Studio**.
-3.  Buka file konfigurasi API (di `data/network/ApiService.kt`).
-4.  Ubah **BASE_URL** sesuai IP Address laptop Anda:
-    ```kotlin
-    // Jangan gunakan "localhost", gunakan IP Address LAN
-    const val BASE_URL = "[http://192.168.1.10/simvent-api/](http://192.168.1.10/simvent-api/)" 
+### Langkah 1: Download Source Code
+1.  Clone repositori ini ke komputer Anda.
+2.  **Untuk Android:** Gunakan kode yang ada di branch `master`.
+3.  **Untuk Backend:** Checkout ke branch `backend` untuk mendapatkan folder API dan file SQL.
+    ```bash
+    git checkout backend
     ```
-5.  Tunggu proses *Gradle Sync* selesai.
 
-### Langkah 3: Jalankan Aplikasi
+### Langkah 2: Setup Backend (Server)
+
+Pilih salah satu sesuai aplikasi web server yang Anda gunakan:
+
+#### ➤ Opsi A: Pengguna XAMPP
+1.  Salin folder backend (API) ke dalam folder instalasi XAMPP:
+    * Path: `C:\xampp\htdocs\`
+    * Contoh hasil: `C:\xampp\htdocs\simvent-api\`
+2.  Nyalakan **Apache** dan **MySQL** pada Control Panel XAMPP.
+
+#### ➤ Opsi B: Pengguna Laragon
+1.  Salin folder backend (API) ke dalam folder instalasi Laragon:
+    * Path: `C:\laragon\www\`
+    * Contoh hasil: `C:\laragon\www\simvent-api\`
+2.  Nyalakan server (Start All) pada Laragon.
+
+#### Setup Database (Sama untuk XAMPP & Laragon)
+1.  Buka browser dan akses `phpMyAdmin` (biasanya `http://localhost/phpmyadmin`).
+2.  Buat database baru dengan nama: **`simvent_db`**.
+3.  Import file SQL yang ada di dalam folder backend tadi ke database `simvent_db`.
+4.  Cek koneksi database di file PHP (biasanya `config/database.php`) dan pastikan username/password sesuai (Default XAMPP: root/kosong).
+
+### Langkah 3: Setup Android Project
+1.  Buka Android Studio.
+2.  Pilih **Open** dan arahkan ke folder proyek Android (dari branch `master`).
+3.  Cari tahu **IP Address** komputer Anda (Wajib satu jaringan dengan HP):
+    * *Windows:* Buka CMD -> ketik `ipconfig` -> salin IPv4 Address.
+4.  Buka file konfigurasi API (misal: `data/network/ApiService.kt`).
+5.  Ubah **BASE_URL** sesuai IP Address Anda:
+    ```kotlin
+    // Ganti 192.168.x.x dengan IP Laptop Anda
+    const val BASE_URL = "[http://192.168.1.10/simvent-api/](http://192.168.1.10/simvent-api/)"
+    ```
+6.  Klik **Sync Gradle**.
+
+### Langkah 4: Jalankan Aplikasi
 1.  Sambungkan HP Android atau nyalakan Emulator.
 2.  Klik tombol **Run (▶)** di Android Studio.
-3.  Aplikasi akan terinstall. Login menggunakan akun admin yang sudah ada di database.
+3.  Login menggunakan akun admin yang tersedia di database.
 
 ---
 
