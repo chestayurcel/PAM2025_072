@@ -2,6 +2,7 @@ package com.example.simvent.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -61,6 +62,7 @@ fun AddRoomScreen(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Nama Ruangan") },
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -72,6 +74,7 @@ fun AddRoomScreen(
                 onValueChange = { desc = it },
                 label = { Text("Deskripsi (Opsional)") },
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
                 minLines = 3
             )
 
