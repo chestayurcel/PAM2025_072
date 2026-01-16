@@ -79,7 +79,9 @@ fun AssetListScreen(
             }
         }
     ) { innerPadding ->
-        Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+        Column(modifier = modifier
+            .padding(innerPadding)
+            .fillMaxSize()) {
 
             // BAGIAN SEARCH & FILTER
             SearchAndFilterSection(assetViewModel)
@@ -172,7 +174,7 @@ fun SearchAndFilterSection(viewModel: AssetViewModel) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
                 viewModel.getAssets()
-                focusManager.clearFocus() // Tutup keyboard
+                focusManager.clearFocus()
             }),
             shape = RoundedCornerShape(12.dp)
         )
@@ -209,7 +211,7 @@ fun AssetList(
     } else {
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(assets) { asset ->
                 AssetCard(asset, viewModel, onEdit)
@@ -267,10 +269,22 @@ fun AssetCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = asset.assetName,
-                        fontSize = 18.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+
+                    if (!asset.itemDesc.isNullOrBlank()) {
+                        Text(
+                            text = asset.itemDesc,
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(vertical = 2.dp),
+                            maxLines = 2,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(4.dp))
 
                     // Chip Lokasi (Badge Abu-abu kecil)
@@ -280,7 +294,7 @@ fun AssetCard(
                     ) {
                         Text(
                             text = asset.roomName ?: "Tanpa Ruangan",
-                            fontSize = 12.sp,
+                            fontSize = 14.sp,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -312,19 +326,19 @@ fun AssetCard(
                     color = Color.Gray
                 )
 
-                // STATUS BADGE (Kapsul Warna)
+                // STATUS BADGE
                 val isGood = asset.condition.equals("Baik", ignoreCase = true)
-                val badgeColor = if (isGood) Color(0xFFE6F4EA) else Color(0xFFFCE8E6) // Background Muda
-                val textColor = if (isGood) Color(0xFF137333) else Color(0xFFC5221F)  // Teks Tua
+                val badgeColor = if (isGood) Color(0xFFE6F4EA) else Color(0xFFFCE8E6)
+                val textColor = if (isGood) Color(0xFF137333) else Color(0xFFC5221F)
 
                 Surface(
                     color = badgeColor,
-                    shape = RoundedCornerShape(50) // Bentuk Kapsul
+                    shape = RoundedCornerShape(50)
                 ) {
                     Text(
                         text = asset.condition,
                         color = textColor,
-                        fontSize = 12.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                     )

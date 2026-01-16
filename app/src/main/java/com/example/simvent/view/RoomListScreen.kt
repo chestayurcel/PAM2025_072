@@ -75,7 +75,10 @@ fun RoomListScreen(
                     if (uiState.rooms.isEmpty()) {
                         Text("Belum ada ruangan.", Modifier.align(Alignment.Center))
                     } else {
-                        LazyColumn(contentPadding = PaddingValues(16.dp)) {
+                        LazyColumn(
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
                             items(uiState.rooms) { room ->
                                 RoomCard(room, viewModel, onEditRoom)
                             }
@@ -107,7 +110,6 @@ fun RoomCard(
             text = { Text("Yakin hapus ruangan'${room.roomName}'? Aset di dalamnya mungkin ikut terhapus atau kehilangan referensi.") },
             confirmButton = {
                 TextButton(onClick = {
-                    // UPDATE BAGIAN INI
                     viewModel.deleteRoom(
                         id = room.roomId,
                         onSuccess = {
@@ -126,8 +128,7 @@ fun RoomCard(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
