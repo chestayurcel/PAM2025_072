@@ -76,7 +76,7 @@ fun LoginScreen(
             Column {
                 Text(
                     text = "SIMVENT",
-                    fontSize = 55.sp,
+                    fontSize = 50.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
