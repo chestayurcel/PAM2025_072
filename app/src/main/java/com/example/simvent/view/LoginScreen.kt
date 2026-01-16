@@ -37,7 +37,6 @@ fun LoginScreen(
     val uiState = loginViewModel.loginUiState
     val context = LocalContext.current
 
-    // Efek Samping (Side Effect) untuk memantau perubahan status
     LaunchedEffect(uiState) {
         when (uiState) {
             is LoginUiState.Success -> {
@@ -82,7 +81,7 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Sistem Inventarisasi\nManajemen Aset",
+                    text = "Sistem Inventarisasi\nAset Sekolah",
                     fontSize = 20.sp,
                     color = androidx.compose.ui.graphics.Color.Gray,
                     lineHeight = 20.sp
