@@ -143,11 +143,11 @@ fun RoomCard(
 
                 // Tombol Aksi (Edit & Delete)
                 Row {
-                    IconButton(onClick = { showDialog = true }) {
-                        Icon(Icons.Default.Delete, "Hapus", tint = Color.Red)
-                    }
                     IconButton(onClick = { onEdit(room.roomId) }) { // Panggil Callback Edit
                         Icon(Icons.Default.Edit, "Edit", tint = Color.Gray)
+                    }
+                    IconButton(onClick = { showDialog = true }) {
+                        Icon(Icons.Default.Delete, "Hapus", tint = Color.Red)
                     }
                 }
             }
